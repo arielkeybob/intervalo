@@ -1,12 +1,18 @@
 # FunTime — documentação de desenvolvimento
 
-**Versão da aplicação:** `v1.16.0`\
+**Versão da aplicação:** `v1.16.1`\
 **Versão do modelo persistido:** `DATA_VERSION = 9`\
 **Autor exibido na interface:** `arielkeybob`  
 **Stack:** HTML + CSS + JavaScript puro  
 **Persistência:** `localStorage`  
 **Backend:** não existe  
 **Build step:** não existe
+
+## V1.16.1 — UX da ponte
+
+Convite antes da transferência: “Instalar FunTime 2”, botão secundário para abrir a v1.16 e fazer backup, e ajuda expansível com a jornada completa. Depois da posse: orientação pelo novo ícone e link “Ver página do FunTime 2”. O link continua na mesma janela para liberar o lock ao sair; não instala nem força a abertura da PWA. Ajuda é ocultada no estado de posse e em erros. Versões do app/boot/SW/footers 1.16.1 e cache `funtime-v1-16-1`, sem mudanças de schema, protocolos ou identidade.
+
+Testes: sintaxe de app.js, sw.js e boot.js; cinco testes do SW e transição integrada no Edge aprovados. Esta última verifica convite, ajuda, backup, espera do lock, preservação da última gravação e bloqueio da v1 após posse inclusive offline. Atualização real do SW de 1.16.0 para 1.16.1 também aprovada com PIN, duas janelas, arquivos e offline; a fixture usa as chaves FunTime e o lock já presentes na 1.16.0. Inspeção visual em 390×844. Perfis temporários, dados fictícios; instalação real no launcher e celular não testadas.
 
 ## V1.16.0 — diário compacto e contrato de posse
 

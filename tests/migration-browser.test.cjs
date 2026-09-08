@@ -7,9 +7,9 @@ const path=require('node:path');
 const {execFileSync}=require('node:child_process');
 const {pbkdf2Sync}=require('node:crypto');
 const {chromium}=require('playwright');
-const baselines={ '1.14.3':'06feefe693059ce7ff5586e04ce847e704eacdec', '1.15.0':'5edf167ee9943ef836689af50d9a43f606c10861' };
+const baselines={ '1.14.3':'06feefe693059ce7ff5586e04ce847e704eacdec', '1.15.0':'5edf167ee9943ef836689af50d9a43f606c10861', '1.16.0':'7c75410' };
 
-for(const [baseVersion,baseline] of Object.entries(baselines)) test(`atualização real do SW: v${baseVersion} → v1.16.0, PIN, duas janelas, arquivos e offline`, {timeout:90000}, async()=>{
+for(const [baseVersion,baseline] of Object.entries(baselines)) test(`atualização real do SW: v${baseVersion} → v1.16.1, PIN, duas janelas, arquivos e offline`, {timeout:90000}, async()=>{
   let current=false;
   const old=new Map(),root=process.cwd();
   const git=(...args)=>execFileSync('git',['-c',`safe.directory=${root.replaceAll('\\','/')}`,...args],{cwd:root});
@@ -46,12 +46,12 @@ for(const [baseVersion,baseline] of Object.entries(baselines)) test(`atualizaç�
     const salt=Buffer.from('fixture-salt-1234');
     const protection={version:3,enabled:true,method:'pin',relockSeconds:0,pin:{salt:salt.toString('base64url'),hash:pbkdf2Sync('1234',salt,210000,32,'sha256').toString('base64url'),iterations:210000,length:4}};
     const seed={'balada-v1-data':JSON.stringify(data),'intervalo-security-v1':JSON.stringify(protection),'intervalo-terms-v1':JSON.stringify({termsAccepted:true,termsVersion:'1.0.1',termsAcceptedAt:1700000000000})};
-    const input=baseVersion==='1.15.0'?Object.fromEntries(Object.entries(seed).map(([key,value])=>[key.replace('balada-v1-data','funtime-v1-data').replace('intervalo-','funtime-'),value])):seed;
+    const input=baseVersion!=='1.14.3'?Object.fromEntries(Object.entries(seed).map(([key,value])=>[key.replace('balada-v1-data','funtime-v1-data').replace('intervalo-','funtime-'),value])):seed;
     await a.evaluate(seed=>{for(const [k,v]of Object.entries(seed))localStorage.setItem(k,v);},input);
     await a.reload();await a.locator('#pin-unlock-value').waitFor({state:'visible'});
     // Uma segunda janela antiga permanece aberta quando o usuário atualiza a primeira.
     const b=await context.newPage();await b.goto(base);
-    if(baseVersion==='1.15.0')await b.waitForFunction(()=>document.querySelector('#startup-message').textContent.includes('outra janela'));
+    if(baseVersion!=='1.14.3')await b.waitForFunction(()=>document.querySelector('#startup-message').textContent.includes('outra janela'));
     else await b.locator('#pin-unlock-value').waitFor({state:'visible'});
     current=true;
     await a.evaluate(async()=>{const r=await navigator.serviceWorker.getRegistration();await r.update();});
@@ -59,8 +59,8 @@ for(const [baseVersion,baseline] of Object.entries(baselines)) test(`atualizaç�
     await a.locator('#pin-unlock-value').fill('1234');await a.locator('#pin-unlock-button').click();
     await a.locator('#lock-screen').waitFor({state:'hidden'});
     await a.locator('#apply-update').click();
-    await a.waitForFunction(()=>document.querySelector('.app-footer-meta').textContent.includes('1.16.0'));
-    await b.waitForFunction(()=>document.querySelector('.app-footer-meta').textContent.includes('1.16.0'));
+    await a.waitForFunction(()=>document.querySelector('.app-footer-meta').textContent.includes('1.16.1'));
+    await b.waitForFunction(()=>document.querySelector('.app-footer-meta').textContent.includes('1.16.1'));
     await a.waitForFunction(()=>localStorage.getItem('funtime-migration-v1')===JSON.stringify({version:1,phase:'done'}));
     const pages=[a,b];
     let active;

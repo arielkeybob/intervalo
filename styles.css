@@ -2180,6 +2180,10 @@ body {
 .startup-screen small { display: block; margin-top: 24px; }
 .startup-screen #startup-continue { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 18px; margin-top: 16px; text-decoration: none; }
 .startup-screen #startup-retry:not([hidden]) { display: block; min-height: 44px; margin: 12px auto 0; }
+.transition-help { margin-top: 18px; text-align: left; font-size: 0.9rem; line-height: 1.5; }
+.transition-help summary { cursor: pointer; min-height: 44px; padding: 10px 0; }
+.transition-help ol { padding-left: 22px; }
+.transition-help li + li { margin-top: 10px; }
 .security-booting #app-shell,
 .app-locked #app-shell {
   visibility: hidden;

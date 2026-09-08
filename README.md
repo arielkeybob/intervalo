@@ -1,4 +1,10 @@
-# FunTime — V1.16.0
+# FunTime — V1.16.1
+
+## V1.16.1 — orientação para instalar o FunTime 2
+
+O convite passa a “Instalar FunTime 2” e informa que abre a página de instalação. Ajuda expansível explica backup, instalação, fechamento da v1 e transferência pelo novo ícone. A ação secundária abre a v1.16 para fazer backup. Depois da posse da v2, orienta abrir pelo ícone e identifica o link como “Ver página do FunTime 2”, sem prometer abertura da PWA instalada.
+
+App, boot, SW e footers 1.16.1; cache `funtime-v1-16-1`. Identidade `/intervalo/`, protocolos, dados e aceite preservados. Publicação autorizada em 08/09/2026, com deployment a conferir após o push. Esta árvore é a ponte v1; nunca publicar a árvore do app v2 sobre `/intervalo/`.
 
 ## V1.16.0 — preparação da transição para v2
 

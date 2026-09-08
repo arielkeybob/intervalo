@@ -5,6 +5,7 @@
   const message = document.querySelector("#startup-message");
   const retry = document.querySelector("#startup-retry");
   const continueLink = document.querySelector("#startup-continue");
+  const transitionHelp = document.querySelector("#startup-transition-help");
   let booted = false;
   let failed = false;
   function show(text) { message.textContent = text; }
@@ -35,7 +36,7 @@
       return false;
     }
     const version = await request(worker, "GET_VERSION");
-    if (version?.version !== "1.16.0") {
+    if (version?.version !== "1.16.1") {
       // Não ativar uma atualização sem a ação explícita do usuário.
       await registration.update();
       show("Há uma atualização necessária para abrir o FunTime.");
@@ -82,6 +83,7 @@
         : null;
     show(storageMessage || error.message || "Não foi possível preparar o app. Seus dados não foram descartados.");
     continueLink.hidden = true;
+    transitionHelp.hidden = true;
     retry.hidden = false;
     retry.textContent = "Tentar novamente";
     retry.onclick = () => window.location.reload();
@@ -90,9 +92,11 @@
   function hasNewOwner() {
     const owner = FunTimeTransition.readOwner(localStorage, window.location.origin);
     if (!owner) return false;
-    show("Seus dados agora são usados pelo FunTime 2. Continue pela nova versão.");
+    show("Seus dados já foram transferidos para o FunTime 2. Procure o novo ícone de abacaxi com relógio na lista de aplicativos e abra por lá.");
     retry.hidden = true;
+    transitionHelp.hidden = true;
     continueLink.href = owner.url;
+    continueLink.textContent = "Ver página do FunTime 2";
     continueLink.hidden = false;
     return true;
   }
@@ -104,15 +108,18 @@
   }
   function offerNewRelease(release) {
     if (!release) return Promise.resolve(false);
-    show(`O FunTime ${release.appVersion} está disponível como uma nova instalação. Faça um backup antes da mudança.`);
+    show(`O FunTime ${release.appVersion} precisa de uma nova instalação. Faça um backup na versão anterior e depois instale pelo novo endereço.`);
     continueLink.href = release.url;
+    continueLink.textContent = "Instalar FunTime 2";
     continueLink.hidden = false;
+    transitionHelp.hidden = false;
     retry.hidden = false;
-    retry.textContent = "Continuar na versão 1.16";
+    retry.textContent = "Abrir versão 1.16 para fazer backup";
     return new Promise(resolve => {
       retry.onclick = () => {
         retry.disabled = true;
         continueLink.hidden = true;
+        transitionHelp.hidden = true;
         show("Abrindo a versão atual…");
         resolve(true);
       };

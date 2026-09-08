@@ -67,9 +67,12 @@ test('duas instalações na mesma origem: receptor aguarda, v1 para antes de ler
     assert.equal(await source.locator('#startup-continue').isVisible(),false);
     releaseReady=true;
     await source.reload();await source.locator('#startup-continue').waitFor({state:'visible'});
-    assert.match(await source.locator('#startup-message').textContent(),/2\.0\.0 está disponível/);
+    assert.match(await source.locator('#startup-message').textContent(),/2\.0\.0 precisa de uma nova instalação/);
+    assert.equal(await source.locator('#startup-continue').textContent(),'Instalar FunTime 2');
+    await source.locator('#startup-transition-help summary').click();
+    assert.match(await source.locator('#startup-transition-help').textContent(),/O botão abre a página de instalação no navegador/);
     assert.equal(await source.locator('#startup-continue').getAttribute('href'),`${origin}/funtime/`);
-    assert.equal(await source.locator('#startup-retry').textContent(),'Continuar na versão 1.16');
+    assert.equal(await source.locator('#startup-retry').textContent(),'Abrir versão 1.16 para fazer backup');
     if(process.env.PWA_SCREENSHOT_DIR){fs.mkdirSync(process.env.PWA_SCREENSHOT_DIR,{recursive:true});await source.screenshot({path:path.join(process.env.PWA_SCREENSHOT_DIR,'funtime-v116-release.png'),fullPage:true});}
     await source.locator('#startup-retry').click();
     await source.waitForFunction(()=>!document.body.classList.contains('boot-pending')&&typeof state!=='undefined');
@@ -90,6 +93,9 @@ test('duas instalações na mesma origem: receptor aguarda, v1 para antes de ler
       Storage.prototype.getItem=function(key){window.storageReads.push(key);return original.call(this,key);};
     });
     await old.goto(`${origin}/intervalo/`);await old.locator('#startup-continue').waitFor({state:'visible'});
+    assert.equal(await old.locator('#startup-continue').textContent(),'Ver página do FunTime 2');
+    assert.match(await old.locator('#startup-message').textContent(),/novo ícone de abacaxi com relógio/);
+    assert.equal(await old.locator('#startup-transition-help').isVisible(),false);
     assert.equal(await old.locator('#startup-continue').getAttribute('href'),`${origin}/funtime/`);
     assert.equal(await old.evaluate(()=>typeof state),'undefined');
     assert.deepEqual(await old.evaluate(()=>window.storageReads),['funtime-installation-owner-v1']);
